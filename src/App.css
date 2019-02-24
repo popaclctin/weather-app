@@ -1,33 +1,26 @@
-.App {
-  text-align: center;
+.weather-list {
+  display: flex;
+  justify-content: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.weather-card {
+  font-size: 3rem;
+  color: #a39f9d;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin: 2rem;
 }
 
-.App-link {
-  color: #61dafb;
+.forecastIcon {
+  font-size: 7rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.temperature span {
+  margin: 0 1rem;
+}
+
+.temperature span:nth-of-type(1) {
+  color: black;
 }
