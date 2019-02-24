@@ -10,7 +10,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 2rem;
 }
 
 .forecastIcon {
@@ -21,6 +20,10 @@
   margin: 0 1rem;
 }
 
-.temperature span:nth-of-type(1) {
-  color: black;
+.temperature span:first-child {
+  color: #d9534f;
+}
+
+.temperature span:last-child {
+  color: #5bc0de;
 }
