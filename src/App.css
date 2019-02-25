@@ -1,15 +1,25 @@
+.weather {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: #777777;
+  padding: 5rem 0;
+}
+
 .weather-list {
   display: flex;
-  justify-content: center;
 }
 
 .weather-card {
   font-size: 3rem;
-  color: #a39f9d;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.weather-card:hover {
+  cursor: pointer;
 }
 
 .forecastIcon {
@@ -26,4 +36,27 @@
 
 .temperature span:last-child {
   color: #5bc0de;
+}
+
+.hours-card {
+  display: flex;
+  font-size: 1.7rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-top: 0.1rem solid #a39f9d;
+}
+
+.hour-card {
+  margin: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hour-card p {
+  margin: 0.1rem 0;
+}
+
+.hour-card p:first-child {
+  color: #d9534f;
 }
