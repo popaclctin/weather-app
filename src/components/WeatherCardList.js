@@ -3,7 +3,7 @@ import WeatherCard from './WeatherCard';
 
 const WeatherCardList = props => {
   const { list, selected, onClick } = props;
-  return list.map(day => (
+  const weatherCardList = list.map(day => (
     <WeatherCard
       key={day.date.getTime()}
       day={day}
@@ -11,6 +11,7 @@ const WeatherCardList = props => {
       selected={selected}
     />
   ));
+  return <div className="weather-list">{weatherCardList}</div>;
 };
 
 export default WeatherCardList;

@@ -1,20 +1,6 @@
 import React from 'react';
-import {
-  faCloud,
-  faCloudRain,
-  faSun,
-  faSnowflake,
-} from '@fortawesome/free-solid-svg-icons';
+import { weekDays, forecastIcons } from './constants.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-const weekDay = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-const forecastIcon = {
-  sunny: faSun,
-  rainy: faCloudRain,
-  cloudy: faCloud,
-  snowy: faSnowflake,
-};
 
 const WeatherCard = props => {
   const { day, onClick, selected } = props;
@@ -28,7 +14,7 @@ const WeatherCard = props => {
           : null
       }
     >
-      <div className="weekDay">{weekDay[day.date.getDay()]}</div>
+      <div className="weekDay">{weekDays[day.date.getDay()]}</div>
       <div className="forecastIcon">
         <ForecastIcon value={day.forecast} />
       </div>
@@ -41,7 +27,7 @@ const WeatherCard = props => {
 };
 
 const ForecastIcon = props => {
-  return <FontAwesomeIcon icon={forecastIcon[props.value]} />;
+  return <FontAwesomeIcon icon={forecastIcons[props.value]} />;
 };
 
 export default WeatherCard;

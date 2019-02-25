@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import WeatherCard from './components/WeatherCard';
-import HourCard from './components/HourCard';
+import WeatherCardList from './components/WeatherCardList';
+import HourCardList from './components/HourCardList';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
+import { weekDays } from './components/constants';
 
 const daysList = [
   {
@@ -124,29 +125,36 @@ class App extends Component {
     const { list, selected } = this.state;
     let selectedItem = list.find(a => a.date.getTime() === selected);
     const hours = selectedItem ? selectedItem.hours : null;
-    const weatherCardList = list.map(day => (
-      <WeatherCard
-        key={day.date.getTime()}
-        day={day}
-        onClick={this.onClickCard}
-        selected={selected}
-      />
-    ));
-
-    const hoursCardList = [];
-    for (let key in hours) {
-      if (hours.hasOwnProperty(key)) {
-        hoursCardList.push(
-          <HourCard key={key} hour={key} temperature={hours[key]} />,
-        );
-      }
-    }
 
     return (
       <BrowserRouter>
         <div className="weather">
-          <div className="weather-list">{weatherCardList}</div>
-          <div className="hours-list">{hoursCardList}</div>
+          <Route
+            path="/"
+            render={() => (
+              <WeatherCardList
+                list={list}
+                selected={selected}
+                onClick={this.onClickCard}
+              />
+            )}
+            exact
+          />
+          <Route
+            path="/:name_of_day"
+            render={props => {
+              const nameOfDay = props.match.params.name_of_day;
+              const index = weekDays.indexOf(nameOfDay);
+              const day = list.find(
+                item => item.date.getDay() === index,
+              );
+              return day ? (
+                <HourCardList hours={day.hours} />
+              ) : (
+                <p>Nimic.</p>
+              );
+            }}
+          />
         </div>
       </BrowserRouter>
     );
