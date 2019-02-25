@@ -1,20 +1,8 @@
 import React, { Component } from 'react';
+import WeatherCard from './components/WeatherCard';
+import HourCard from './components/HourCard';
+import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCloud,
-  faCloudRain,
-  faSun,
-  faSnowflake,
-} from '@fortawesome/free-solid-svg-icons';
-const weekDay = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-const forecastIcon = {
-  sunny: faSun,
-  rainy: faCloudRain,
-  cloudy: faCloud,
-  snowy: faSnowflake,
-};
 
 const daysList = [
   {
@@ -135,7 +123,7 @@ class App extends Component {
   render() {
     const { list, selected } = this.state;
     let selectedItem = list.find(a => a.date.getTime() === selected);
-    if (!selectedItem) selectedItem = null;
+    const hours = selectedItem ? selectedItem.hours : null;
     const weatherCardList = list.map(day => (
       <WeatherCard
         key={day.date.getTime()}
@@ -144,64 +132,25 @@ class App extends Component {
         selected={selected}
       />
     ));
+
+    const hoursCardList = [];
+    for (let key in hours) {
+      if (hours.hasOwnProperty(key)) {
+        hoursCardList.push(
+          <HourCard key={key} hour={key} temperature={hours[key]} />,
+        );
+      }
+    }
+
     return (
-      <div className="weather">
-        <div className="weather-list">{weatherCardList}</div>
-        <HoursCard day={selectedItem} />
-      </div>
+      <BrowserRouter>
+        <div className="weather">
+          <div className="weather-list">{weatherCardList}</div>
+          <div className="hours-list">{hoursCardList}</div>
+        </div>
+      </BrowserRouter>
     );
   }
 }
-
-const ForecastIcon = props => {
-  return <FontAwesomeIcon icon={forecastIcon[props.value]} />;
-};
-
-const WeatherCard = props => {
-  const { day, onClick, selected } = props;
-  return (
-    <div
-      className="weather-card"
-      onClick={() => onClick(day.date.getTime())} // functie arrow => scade performanta?
-      style={
-        day.date.getTime() === selected
-          ? { border: '0.1rem solid #a39f9d' }
-          : null
-      }
-    >
-      <div className="weekDay">{weekDay[day.date.getDay()]}</div>
-      <div className="forecastIcon">
-        <ForecastIcon value={day.forecast} />
-      </div>
-      <div className="temperature">
-        <span>{day.high}&deg;</span>
-        <span>{day.low}&deg;</span>
-      </div>
-    </div>
-  );
-};
-
-const HoursCard = props => {
-  const hours = props.day ? props.day.hours : {};
-  const result = [];
-  for (let key in hours) {
-    if (hours.hasOwnProperty(key)) {
-      result.push(
-        <HourCard key={key} hour={key} temperature={hours[key]} />,
-      );
-    }
-  }
-  return <div className="hours-card">{result}</div>;
-};
-
-const HourCard = props => {
-  const { hour, temperature } = props;
-  return (
-    <div className="hour-card">
-      <p>{temperature}&deg;</p>
-      <p>{`${hour}:00`}</p>
-    </div>
-  );
-};
 
 export default App;
