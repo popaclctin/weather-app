@@ -132,7 +132,6 @@ class App extends Component {
       'http://api.openweathermap.org/data/2.5/forecast?id=685948&APPID=ca44e2651db34cadd7987a1512474a89&units=metric',
     )
       .then(result => {
-        console.log(result.data);
         return this.setState({
           forecast: result.data,
           isLoading: false,
@@ -143,23 +142,22 @@ class App extends Component {
 
   render() {
     const { error, forecast, selected, isLoading } = this.state;
-
-    if (isLoading) return <p>Loading</p>;
-
-    if (error) return <p>Eroare: {error}</p>;
-
+    // e problema la route. Rendeaza inainte sa fi ajuns rezultatele prin fetch
     return (
       <div className="main">
         <Route
           path="/"
-          render={() => (
-            // <DayForecastList
-            //   list={forecast.list}
-            //   selected={selected}
-            //   onClick={this.onClickCard}
-            // />
-            <p />
-          )}
+          render={props => {
+            if (isLoading) return <p>Loading...</p>;
+            if (error) return <p>There is an error!</p>;
+            return (
+              <DayForecastList
+                list={forecast ? forecast.list : []}
+                selected={selected}
+                onClick={this.onClickCard}
+              />
+            );
+          }}
           exact
         />
         {/* <Route
