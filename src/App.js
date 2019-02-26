@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import WeatherCardList from './components/WeatherCardList';
 import HourCardList from './components/HourCardList';
-import { Route, Link } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import axios from 'axios';
 import './App.css';
 import { weekDays } from './components/constants';
 
@@ -113,18 +114,30 @@ class App extends Component {
     super(props);
     this.state = {
       list: daysList,
+      forecast: null,
       selected: null,
+      error: null,
     };
+  }
+
+  componentDidMount() {
+    this.fetchForecast();
   }
 
   onClickCard = id => {
     this.setState({ selected: id });
   };
 
+  fetchForecast() {
+    axios(
+      'http://api.openweathermap.org/data/2.5/forecast?id=685948&APPID=ca44e2651db34cadd7987a1512474a89&units=metric',
+    )
+      .then(result => this.setState({ forecast: result.data }))
+      .catch(error => this.setState({ error }));
+  }
+
   render() {
     const { list, selected } = this.state;
-    let selectedItem = list.find(a => a.date.getTime() === selected);
-    const hours = selectedItem ? selectedItem.hours : null;
 
     return (
       <div className="main">
