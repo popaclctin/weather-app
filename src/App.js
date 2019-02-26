@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import WeatherCardList from './components/WeatherCardList';
-import HourCardList from './components/HourCardList';
+import DayForecastList from './components/DayForecastList';
+import HourForecastList from './components/HourForecastList';
 import { Route } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
@@ -113,10 +113,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      list: daysList,
       forecast: null,
       selected: null,
       error: null,
+      isLoading: false,
     };
   }
 
@@ -124,35 +124,45 @@ class App extends Component {
     this.fetchForecast();
   }
 
-  onClickCard = id => {
-    this.setState({ selected: id });
-  };
+  onClickCard = id => {};
 
   fetchForecast() {
+    this.setState({ isLoading: true });
     axios(
       'http://api.openweathermap.org/data/2.5/forecast?id=685948&APPID=ca44e2651db34cadd7987a1512474a89&units=metric',
     )
-      .then(result => this.setState({ forecast: result.data }))
+      .then(result => {
+        console.log(result.data);
+        return this.setState({
+          forecast: result.data,
+          isLoading: false,
+        });
+      })
       .catch(error => this.setState({ error }));
   }
 
   render() {
-    const { list, selected } = this.state;
+    const { error, forecast, selected, isLoading } = this.state;
+
+    if (isLoading) return <p>Loading</p>;
+
+    if (error) return <p>Eroare: {error}</p>;
 
     return (
       <div className="main">
         <Route
           path="/"
           render={() => (
-            <WeatherCardList
-              list={list}
-              selected={selected}
-              onClick={this.onClickCard}
-            />
+            // <DayForecastList
+            //   list={forecast.list}
+            //   selected={selected}
+            //   onClick={this.onClickCard}
+            // />
+            <p />
           )}
           exact
         />
-        <Route
+        {/* <Route
           path="/:name_of_day"
           render={props => {
             const nameOfDay = props.match.params.name_of_day;
@@ -165,7 +175,7 @@ class App extends Component {
                 <h1 style={{ 'text-align': 'center' }}>
                   {nameOfDay}
                 </h1>
-                <HourCardList hours={day.hours} />
+                <HourForecastList hours={day.hours} />
               </div>
             ) : (
               <p
@@ -176,7 +186,7 @@ class App extends Component {
               >{`There exists no information for ${nameOfDay}.`}</p>
             );
           }}
-        />
+        /> */}
       </div>
     );
   }

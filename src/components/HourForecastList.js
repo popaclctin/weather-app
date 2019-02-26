@@ -4,7 +4,7 @@ const HourForecastList = ({ list }) => {
   const hoursCardList = list.map(item => {
     const dt = new Date(item.dt);
     const weather = item.weather.main;
-    const temp = ite.main.temp;
+    const temp = item.main.temp;
     return (
       <HourForecast
         hour={dt.getHours()}

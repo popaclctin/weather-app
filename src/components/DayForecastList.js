@@ -1,27 +1,47 @@
-import React from 'react';
-import WeatherCard from './WeatherCard';
-import HourCardList from './HourCardList';
+import React, { Component } from 'react';
+import DayForecast from './DayForecast';
+import HourForecastList from './HourForecastList';
 
-const WeatherCardList = props => {
-  const { list, selected, onClick } = props;
-  const weatherCardList = list.map(day => (
-    <WeatherCard
-      key={day.date.getTime()}
-      day={day}
-      onClick={onClick}
-      selected={selected}
-    />
-  ));
-  const selectedDay = list.find(
-    item => item.date.getTime() === selected,
-  );
-  const hours = selectedDay ? selectedDay.hours : null;
+const DayForecastList = ({ list, selected, onClick }) => {
+  const groupList = groupByDate(list);
+  const result = [];
+  for (let key in groupList) {
+    if (groupList.hasOwnProperty(key)) {
+      const forecasts = groupList[key];
+      const minTemp = forecasts.reduce((acc, forecast) => {
+        const temp = forecast.main.temp;
+        return acc < temp ? acc : temp;
+      });
+      const maxTemp = forecasts.reduce((acc, forecast) => {
+        const temp = forecast.main.temp;
+        return acc > temp ? acc : temp;
+      });
+      result.push(
+        <DayForecast
+          day={key}
+          maxTemp={maxTemp}
+          minTemp={minTemp}
+          onClick={onClick}
+          selected
+        />,
+      );
+    }
+  }
   return (
     <div className="weather">
-      <div className="weather-list">{weatherCardList}</div>
-      <HourCardList hours={hours} />
+      <div className="weather-list">{result}</div>
     </div>
   );
 };
 
-export default WeatherCardList;
+const groupByDate = list => {
+  return list.reduce((result, forecast) => {
+    const date = new Date(forecast.dt);
+    const dateString = date.toDateString();
+    if (!result[dateString]) result[dateString] = [];
+    result[dateString].push(forecast);
+    return result;
+  }, {});
+};
+
+export default DayForecastList;

@@ -2,32 +2,27 @@ import React from 'react';
 import { weekDays, forecastIcons } from './constants.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const WeatherCard = props => {
-  const { day, onClick, selected } = props;
+const DayForecast = ({
+  minTemp,
+  maxTemp,
+  day,
+  onClick,
+  selected,
+}) => {
   return (
-    <div
-      className="weather-card"
-      onClick={() => onClick(day.date.getTime())} // functie arrow => scade performanta?
-      style={
-        day.date.getTime() === selected
-          ? { border: '0.1rem solid #a39f9d' }
-          : null
-      }
-    >
-      <div className="weekDay">{weekDays[day.date.getDay()]}</div>
-      <div className="forecastIcon">
-        <ForecastIcon value={day.forecast} />
-      </div>
+    <div className="weather-card" onClick={() => onClick()}>
+      <div className="weekDay">{day}</div>
+      <div className="forecastIcon" />
       <div className="temperature">
-        <span>{day.high}&deg;</span>
-        <span>{day.low}&deg;</span>
+        <span>{maxTemp}&deg;</span>
+        <span>{minTemp}&deg;</span>
       </div>
     </div>
   );
 };
 
-const ForecastIcon = props => {
-  return <FontAwesomeIcon icon={forecastIcons[props.value]} />;
-};
+const ForecastIcon = ({ value }) => (
+  <FontAwesomeIcon icon={forecastIcons[value]} />
+);
 
-export default WeatherCard;
+export default DayForecast;
