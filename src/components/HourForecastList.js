@@ -1,17 +1,27 @@
 import React from 'react';
-import HourCard from './HourCard';
 
-const HourCardList = props => {
-  const { hours, className = 'hours-list' } = props;
-  const hoursCardList = [];
-  for (let key in hours) {
-    if (hours.hasOwnProperty(key)) {
-      hoursCardList.push(
-        <HourCard key={key} hour={key} temperature={hours[key]} />,
-      );
-    }
-  }
+const HourForecastList = ({ list }) => {
+  const hoursCardList = list.map(item => {
+    const dt = new Date(item.dt);
+    const weather = item.weather.main;
+    const temp = ite.main.temp;
+    return (
+      <HourForecast
+        hour={dt.getHours()}
+        weather={weather}
+        temperature={temp}
+      />
+    );
+  });
   return <div className="hours-list">{hoursCardList}</div>;
 };
 
-export default HourCardList;
+const HourForecast = ({ hour, weather, temperature }) => (
+  <div className="hour-card">
+    <p>{temperature}&deg;</p>
+    <p>{weather}</p>
+    <p>{`${hour}:00`}</p>
+  </div>
+);
+
+export default HourForecastList;
