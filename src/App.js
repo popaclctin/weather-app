@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import WeatherCardList from './components/WeatherCardList';
 import HourCardList from './components/HourCardList';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import './App.css';
 import { weekDays } from './components/constants';
 
@@ -127,36 +127,44 @@ class App extends Component {
     const hours = selectedItem ? selectedItem.hours : null;
 
     return (
-      <BrowserRouter>
-        <div className="weather">
-          <Route
-            path="/"
-            render={() => (
-              <WeatherCardList
-                list={list}
-                selected={selected}
-                onClick={this.onClickCard}
-              />
-            )}
-            exact
-          />
-          <Route
-            path="/:name_of_day"
-            render={props => {
-              const nameOfDay = props.match.params.name_of_day;
-              const index = weekDays.indexOf(nameOfDay);
-              const day = list.find(
-                item => item.date.getDay() === index,
-              );
-              return day ? (
+      <div className="main">
+        <Route
+          path="/"
+          render={() => (
+            <WeatherCardList
+              list={list}
+              selected={selected}
+              onClick={this.onClickCard}
+            />
+          )}
+          exact
+        />
+        <Route
+          path="/:name_of_day"
+          render={props => {
+            const nameOfDay = props.match.params.name_of_day;
+            const index = weekDays.indexOf(nameOfDay);
+            const day = list.find(
+              item => item.date.getDay() === index,
+            );
+            return day ? (
+              <div>
+                <h1 style={{ 'text-align': 'center' }}>
+                  {nameOfDay}
+                </h1>
                 <HourCardList hours={day.hours} />
-              ) : (
-                <p>Nimic.</p>
-              );
-            }}
-          />
-        </div>
-      </BrowserRouter>
+              </div>
+            ) : (
+              <p
+                style={{
+                  'font-size': '2rem',
+                  'text-align': 'center',
+                }}
+              >{`There exists no information for ${nameOfDay}.`}</p>
+            );
+          }}
+        />
+      </div>
     );
   }
 }

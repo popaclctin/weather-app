@@ -41,9 +41,10 @@
 .hours-list {
   display: flex;
   font-size: 1.7rem;
-  margin: 1rem 0;
+  margin: 1rem auto;
   padding: 1rem;
   border-top: 0.1rem solid #a39f9d;
+  justify-content: center;
 }
 
 .hour-card {

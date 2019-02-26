@@ -2,7 +2,7 @@ import React from 'react';
 import HourCard from './HourCard';
 
 const HourCardList = props => {
-  const { hours } = props;
+  const { hours, className = 'hours-list' } = props;
   const hoursCardList = [];
   for (let key in hours) {
     if (hours.hasOwnProperty(key)) {
