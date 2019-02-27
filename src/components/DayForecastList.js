@@ -1,48 +1,42 @@
-import React, { Component } from 'react';
+import React from 'react';
 import DayForecast from './DayForecast';
 import HourForecastList from './HourForecastList';
 
-const DayForecastList = ({ list, selected, onClick }) => {
-  const groupList = groupByDate(list);
-  console.log(groupList);
+const DayForecastList = ({ list, selected, onClick, location }) => {
+  console.log(list);
   const result = [];
-  for (let key in groupList) {
-    if (groupList.hasOwnProperty(key)) {
-      const forecasts = groupList[key];
-      const minTemp = forecasts.reduce((acc, forecast) => {
+  for (let key in list) {
+    if (list.hasOwnProperty(key)) {
+      const forecasts = list[key];
+      let minTemp = forecasts.reduce((acc, forecast) => {
         const temp = forecast.main.temp;
         return acc < temp ? acc : temp;
       }, 100);
-      const maxTemp = forecasts.reduce((acc, forecast) => {
+      minTemp = Math.round(minTemp);
+      let maxTemp = forecasts.reduce((acc, forecast) => {
         const temp = forecast.main.temp;
         return acc > temp ? acc : temp;
       }, -100);
+      maxTemp = Math.round(maxTemp);
       result.push(
         <DayForecast
+          key={key}
           day={key}
           maxTemp={maxTemp}
           minTemp={minTemp}
           onClick={onClick}
-          selected
+          selected={key === selected}
         />,
       );
     }
   }
   return (
     <div className="weather">
+      <h1>{location}</h1>
       <div className="weather-list">{result}</div>
+      <HourForecastList list={selected ? list[selected] : []} />
     </div>
   );
-};
-
-const groupByDate = list => {
-  return list.reduce((result, forecast) => {
-    const date = new Date(forecast.dt * 1000);
-    const dateString = date.toDateString();
-    if (!result[dateString]) result[dateString] = [];
-    result[dateString].push(forecast);
-    return result;
-  }, {});
 };
 
 export default DayForecastList;
