@@ -34,7 +34,12 @@ const DayForecastList = ({ list, selected, onClick, location }) => {
     <div className="weather">
       <h1>{location}</h1>
       <div className="weather-list">{result}</div>
-      <HourForecastList list={selected ? list[selected] : []} />
+      {selected && (
+        <HourForecastList
+          list={list[selected]}
+          nameOfDay={selected}
+        />
+      )}
     </div>
   );
 };

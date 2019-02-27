@@ -70,3 +70,10 @@
 .selected {
   border: 0.1rem solid #a39f9d;
 }
+
+.hours-graph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #777777;
+}
