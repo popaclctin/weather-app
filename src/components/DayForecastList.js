@@ -1,44 +1,47 @@
 import React from 'react';
 import DayForecast from './DayForecast';
 import HourForecastList from './HourForecastList';
+import WeatherGraph from './WeatherGraph';
 
-const DayForecastList = ({ list, selected, onClick, location }) => {
-  console.log(list);
-  const result = [];
-  for (let key in list) {
-    if (list.hasOwnProperty(key)) {
-      const forecasts = list[key];
-      let minTemp = forecasts.reduce((acc, forecast) => {
-        const temp = forecast.main.temp;
-        return acc < temp ? acc : temp;
-      }, 100);
-      minTemp = Math.round(minTemp);
-      let maxTemp = forecasts.reduce((acc, forecast) => {
-        const temp = forecast.main.temp;
-        return acc > temp ? acc : temp;
-      }, -100);
-      maxTemp = Math.round(maxTemp);
-      result.push(
-        <DayForecast
-          key={key}
-          day={key}
-          maxTemp={maxTemp}
-          minTemp={minTemp}
-          onClick={onClick}
-          selected={key === selected}
-        />,
-      );
-    }
-  }
+const DayForecastList = ({ list, selected, onClick, city }) => {
+  const result = list.map(day => {
+    const min = day.forecast.reduce(
+      (accumulator, fc) =>
+        accumulator < fc.temperature ? accumulator : fc.temperature,
+      100,
+    );
+    const max = day.forecast.reduce(
+      (accumulator, fc) =>
+        accumulator > fc.temperature ? accumulator : fc.temperature,
+      -100,
+    );
+    return (
+      <DayForecast
+        key={day.weekday}
+        weekday={day.weekday}
+        max={max}
+        min={min}
+        onClick={onClick}
+        selected={day.weekday === selected}
+      />
+    );
+  });
+  const selectedForecast = selected
+    ? list.find(item => item.weekday === selected).forecast
+    : null;
   return (
-    <div className="weather">
-      <h1>{location}</h1>
-      <div className="weather-list">{result}</div>
+    <div className="forecast">
+      <h1>{city}</h1>
+      <div className="forecastDays">{result}</div>
       {selected && (
-        <HourForecastList
-          list={list[selected]}
-          nameOfDay={selected}
-        />
+        <div className="hours-graph">
+          <HourForecastList list={selectedForecast} />
+          <WeatherGraph
+            data={selectedForecast}
+            width="800"
+            height="500"
+          />
+        </div>
       )}
     </div>
   );

@@ -1,29 +1,29 @@
-.weather {
+main {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
   color: #777777;
-  padding: 5rem 0;
   font-size: 2.5rem;
 }
 
-.weather h1 {
-  font-size: 2.5rem;
+main h1 {
+  text-align: center;
 }
 
-.weather-list {
+.forecastDays {
   display: flex;
-}
-
-.weather-card {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
-.weather-card:hover {
+.forecastDay {
   cursor: pointer;
+  padding: 0.5rem;
+  width: 12rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .forecastIcon {
@@ -31,7 +31,7 @@
 }
 
 .temperature span {
-  margin: 0 1rem;
+  padding: 0 1rem;
 }
 
 .temperature span:first-child {
@@ -42,38 +42,32 @@
   color: #5bc0de;
 }
 
-.hours-list {
+.hoursList {
   display: flex;
   font-size: 1.8rem;
-  margin: 1rem auto;
+  margin: 1rem 0;
   padding: 1rem;
   border-top: 0.1rem solid #a39f9d;
   justify-content: center;
+  align-items: center;
   color: #777777;
 }
 
-.hour-card {
-  margin: 0 1rem;
+.hourCard {
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.hour-card p {
+.hourCard p {
   margin: 0.1rem 0;
 }
 
-.hour-card p:last-child {
+.hourCard p:last-child {
   color: #d9534f;
 }
 
 .selected {
   border: 0.1rem solid #a39f9d;
-}
-
-.hours-graph {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #777777;
 }

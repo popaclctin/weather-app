@@ -1,32 +1,31 @@
 import React from 'react';
-import WeatherGraph from './WeatherGraph.js';
 
-const HourForecastList = ({ list, nameOfDay }) => {
+const HourForecastList = ({ list }) => {
   const hoursCardList = list.map(item => {
-    const dt = new Date(item.dt * 1000);
-    const weather = item.weather.main;
-    const temp = Math.round(item.main.temp);
+    const dt = new Date(item.dt);
+    const icon = item.icon;
+    const weather = item.weather;
+    const temperature = item.temperature;
     return (
       <HourForecast
+        key={item.dt}
         hour={dt.getHours()}
+        icon={icon}
         weather={weather}
-        temperature={temp}
+        temperature={temperature}
       />
     );
   });
-  return (
-    <div className="hours-graph">
-      <h1>{nameOfDay}</h1>
-      <div className="hours-list">{hoursCardList}</div>
-      <WeatherGraph data={list} width="800" height="500" />
-    </div>
-  );
+  return <div className="hoursList">{hoursCardList}</div>;
 };
 
-const HourForecast = ({ hour, weather, temperature }) => (
-  <div className="hour-card">
+const HourForecast = ({ hour, weather, icon, temperature }) => (
+  <div className="hourCard">
     <p>{`${hour}:00`}</p>
-    <p>{weather}</p>
+    <img
+      src={`http://openweathermap.org/img/w/${icon}.png`}
+      alt={weather}
+    />
     <p>{temperature}&deg;</p>
   </div>
 );

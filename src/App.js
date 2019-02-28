@@ -1,29 +1,22 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+import './App.css';
+import { BrowserRouter } from 'react-router-dom';
 import DayForecastList from './components/DayForecastList';
 import HourForecastList from './components/HourForecastList';
 import { Route } from 'react-router-dom';
-import axios from 'axios';
-import './App.css';
-
-const groupByDate = list => {
-  return list.reduce((result, forecast) => {
-    const date = new Date(forecast.dt * 1000);
-    const dateString = date.toDateString();
-    if (!result[dateString]) result[dateString] = [];
-    result[dateString].push(forecast);
-    return result;
-  }, {});
-};
+import WeatherGraph from './components/WeatherGraph';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      forecast: null,
-      dayForecast: null,
+      forecast5days: [],
+      city: '',
+      country: '',
       selected: null,
       error: null,
-      isLoading: true,
+      isLoading: false,
     };
   }
 
@@ -31,85 +24,114 @@ class App extends Component {
     this.fetchForecast();
   }
 
-  onClickCard = id => {
-    this.setState({ selected: id });
+  onClick = weekday => {
+    this.setState({ selected: weekday });
   };
 
   fetchForecast() {
+    console.log('Inside fetchForecast');
     this.setState({ isLoading: true });
     axios(
       'http://api.openweathermap.org/data/2.5/forecast?id=685948&APPID=ca44e2651db34cadd7987a1512474a89&units=metric',
     )
-      .then(result =>
-        this.setState({
-          forecast: result.data,
+      .then(result => {
+        const data = result.data;
+        const forecast = data.list.map(fc => ({
+          dt: fc.dt * 1000,
+          temperature: Math.round(fc.main.temp),
+          weather: fc.weather[0].main,
+          icon: fc.weather[0].icon,
+        }));
+        const forecast5days = groupByWeekday(forecast);
+        return this.setState({
+          forecast5days: forecast5days,
           isLoading: false,
-          dayForecast: groupByDate(result.data.list),
-        }),
-      )
+          city: data.city.name,
+        });
+      })
       .catch(error => this.setState({ error }));
   }
 
   render() {
     const {
+      forecast5days,
+      city,
       error,
-      forecast,
-      dayForecast,
       selected,
       isLoading,
     } = this.state;
 
     return (
-      <div className="main">
-        <Route
-          path="/"
-          render={() => {
-            let result;
-            if (isLoading) result = <p>Loading...</p>;
-            else
-              result = (
-                <DayForecastList
-                  list={dayForecast}
-                  selected={selected}
-                  onClick={this.onClickCard}
-                  location={forecast.city.name}
-                />
-              );
-            if (error) result = <p>There is an error!</p>;
-            return result;
-          }}
-          exact
-        />
-        <Route
-          path="/:name_of_day"
-          render={props => {
-            const nameOfDay = props.match.params.name_of_day;
-            let day;
-            for (let key in dayForecast) {
-              if (dayForecast.hasOwnProperty(key)) {
-                if (key.startsWith(nameOfDay)) day = dayForecast[key];
+      <BrowserRouter>
+        <main>
+          <Route
+            path="/"
+            render={() => {
+              let result;
+              if (isLoading) result = <p>Loading...</p>;
+              else
+                result = (
+                  <DayForecastList
+                    list={forecast5days}
+                    selected={selected}
+                    onClick={this.onClick}
+                    city={city}
+                  />
+                );
+              if (error) result = <p>There is an error!</p>;
+              return result;
+            }}
+            exact
+          />
+          <Route
+            path="/:weekday"
+            render={props => {
+              let result;
+              const weekday = props.match.params.weekday;
+
+              if (isLoading) result = <p>Loading...</p>;
+              else {
+                const day = forecast5days.find(
+                  item => item.weekday === weekday,
+                );
+                result = day ? (
+                  <div className="hoursGraph">
+                    <h1>{day.weekday}</h1>
+                    <HourForecastList list={day.forecast} />
+                    <WeatherGraph
+                      data={day.forecast}
+                      width="800"
+                      height="500"
+                    />
+                  </div>
+                ) : (
+                  <p>{`There exists no information for ${weekday}.`}</p>
+                );
               }
-            }
-            return day ? (
-              <div>
-                <h1 style={{ 'text-align': 'center' }}>
-                  {nameOfDay}
-                </h1>
-                <HourForecastList list={day} />
-              </div>
-            ) : (
-              <p
-                style={{
-                  'font-size': '2rem',
-                  'text-align': 'center',
-                }}
-              >{`There exists no information for ${nameOfDay}.`}</p>
-            );
-          }}
-        />
-      </div>
+              return result;
+            }}
+          />
+        </main>
+      </BrowserRouter>
     );
   }
 }
+
+const groupByWeekday = list => {
+  var options = { weekday: 'long' };
+  const grouped = list.reduce((result, fc) => {
+    const date = new Date(fc.dt);
+    const weekday = new Intl.DateTimeFormat('en-US', options).format(
+      date,
+    );
+    if (!result[weekday]) result[weekday] = [];
+    result[weekday].push(fc);
+    return result;
+  }, {});
+  return Object.keys(grouped).map(key => ({
+    weekday: key,
+    forecast: grouped[key],
+  }));
+};
 
 export default App;

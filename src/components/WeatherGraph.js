@@ -16,8 +16,8 @@ function WeatherGraph({ data, width, height }) {
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
 
-  const x = d => new Date(d.dt * 1000);
-  const y = d => d.main.temp;
+  const x = d => new Date(d.dt);
+  const y = d => d.temperature;
 
   const xScale = scaleTime({
     rangeRound: [0, xMax],
