@@ -1,3 +1,4 @@
+This project uses the weather.com API to display the forecast of the weather in Bacau.
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
